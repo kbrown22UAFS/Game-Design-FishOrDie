@@ -4,6 +4,7 @@ public class HookCatch : MonoBehaviour
 {
     public ScoreManager scoreManager;
     public AudioSource catchSound;
+    public float currentPitch = 0.4f;
 
     private GameObject caughtFish = null;
 
@@ -19,14 +20,11 @@ public class HookCatch : MonoBehaviour
             {
                 movement.enabled = false;
 
-                if (movement.swimSound != null)
-                {
-                    movement.swimSound.Stop();
-                }
             }
 
             if (catchSound != null)
-            { 
+            {
+                catchSound.pitch = currentPitch;
                 catchSound.Play();
             }
         }
@@ -38,6 +36,10 @@ public class HookCatch : MonoBehaviour
         if (caughtFish != null && transform.position.y >= 2.7f)
         {
             scoreManager.AddScore(1);
+
+            currentPitch -= 0.20f;
+            currentPitch = Mathf.Clamp(currentPitch, 0.1f, 1.5f);
+
             Destroy(caughtFish);
             caughtFish = null;
         }

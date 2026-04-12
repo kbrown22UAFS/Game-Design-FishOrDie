@@ -3,6 +3,7 @@ using UnityEngine;
 public class HookCatch : MonoBehaviour
 {
     public ScoreManager scoreManager;
+    public AudioSource catchSound;
 
     private GameObject caughtFish = null;
 
@@ -17,6 +18,16 @@ public class HookCatch : MonoBehaviour
             if (movement != null)
             {
                 movement.enabled = false;
+
+                if (movement.swimSound != null)
+                {
+                    movement.swimSound.Stop();
+                }
+            }
+
+            if (catchSound != null)
+            { 
+                catchSound.Play();
             }
         }
     }

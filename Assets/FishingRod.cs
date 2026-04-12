@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class FishingRod : MonoBehaviour
 {
     public Transform hook;
+    public AudioSource reelSound;
     public float speed = 2f;
 
     public float bottomLimit = -3f; //lowest point the hook can reach
@@ -43,12 +44,22 @@ public class FishingRod : MonoBehaviour
         //Reeling upward
         if (isReeling)
         {
+            if (reelSound != null && !reelSound.isPlaying)
+            {
+                reelSound.Play();
+            }
+
             hook.position += Vector3.up * speed * Time.deltaTime;
 
             if (hook.position.y >= transform.position.y)
             {
                 hook.position = new Vector3(hook.position.x, transform.position.y, hook.position.z);
                 isReeling = false;
+
+                if (reelSound != null)
+                { 
+                    reelSound.Stop();
+                }
             }
         }
     }

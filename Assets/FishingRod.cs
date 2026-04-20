@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 public class FishingRod : MonoBehaviour
 {
     public Transform hook;
+    public AudioSource reelSound;
+    public float speed = 2f;
     public Transform rodTip;
 
     [Header("Cast")]
@@ -126,17 +128,23 @@ public class FishingRod : MonoBehaviour
 
         if (toRod.magnitude <= 0.05f)
         {
-            MoveHook(rodOrigin);
-            state = State.AtRod;
-            return;
-        }
+            if (reelSound != null && !reelSound.isPlaying)
+            {
+                reelSound.Play();
+            }
 
-        MoveHook(hook.position + toRod.normalized * reelingSpeed * Time.deltaTime);
+            hook.position += Vector3.up * speed * Time.deltaTime;
 
-        if (!Keyboard.current.xKey.isPressed)
-        {
-            // Stop reeling — sink again if still underwater, otherwise snap home
-            state = hook.position.y <= waterSurfaceY ? State.InWater : State.AtRod;
+            if (hook.position.y >= transform.position.y)
+            {
+                hook.position = new Vector3(hook.position.x, transform.position.y, hook.position.z);
+                isReeling = false;
+
+                if (reelSound != null)
+                { 
+                    reelSound.Stop();
+                }
+            }
         }
     }
 

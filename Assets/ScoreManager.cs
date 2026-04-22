@@ -5,17 +5,28 @@ using UnityEngine.SceneManagement;
 public class ScoreManager : MonoBehaviour
 {
     public static int score = 0;
+    public static bool gameEnded = false;
 
     public TextMeshProUGUI scoreText;
     public int totalFish = 3;
 
+    // Set this in Inspector (last level number)
+    public int finalLevelIndex = 2;
+
     void Start()
     {
+        gameEnded = false;
+
+        //Automatically count fish in scene
+        totalFish = GameObject.FindGameObjectsWithTag("Fish").Length;
+
         UpdateScore();
     }
 
     public void AddScore(int amount)
     {
+        if (gameEnded) return;
+
         score += amount;
         totalFish--;
 
@@ -23,17 +34,30 @@ public class ScoreManager : MonoBehaviour
 
         if (totalFish <= 0)
         {
-            GameOver();
+            LoadNextLevel();
         }
     }
 
     void UpdateScore()
     {
-        scoreText.text = "Score: " + score;
+        scoreText.text = "Fish Caught: " + score;
     }
 
-    void GameOver()
+    void LoadNextLevel()
     {
-        SceneManager.LoadScene("GameOverScene");
+        if (gameEnded) return;
+
+        gameEnded = true;
+
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (currentIndex >= finalLevelIndex)
+        {
+            SceneManager.LoadScene("GameOverScene");
+        }
+        else
+        {
+            SceneManager.LoadScene(currentIndex + 1);
+        }
     }
 }

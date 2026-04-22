@@ -9,14 +9,23 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/TitleScene.unity
-    guid: ba94b4b77b607f643adfc49020428ef1
+    path: Assets/Scenes/FishOrDieScene1.unity
+    guid: b2b12072e2433054cab98203ce493fc1
   - enabled: 1
-    path: Assets/Scenes/FishOrDieScene.unity
+    path: Assets/Scenes/FishOrDieScene2.unity
+    guid: 9ca4885558a4c9b4f97423710ab31b44
+  - enabled: 1
+    path: Assets/Scenes/FishOrDieScene3.unity
     guid: 9b7cc2904ec8fe047a9986ff005272ab
   - enabled: 1
     path: Assets/Scenes/GameOverScene.unity
     guid: 1429184e536149d4fa91f056d50aee64
+  - enabled: 1
+    path: Assets/Scenes/YouLoseScene.unity
+    guid: 4db0aa0ae36ae0f4492ca627b01b8e0c
+  - enabled: 1
+    path: Assets/Scenes/TitleScene.unity
+    guid: ba94b4b77b607f643adfc49020428ef1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

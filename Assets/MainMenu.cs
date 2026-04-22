@@ -5,17 +5,22 @@ using System.Collections;
 public class MainMenu : MonoBehaviour
 {
     public AudioSource clickSound;
-    public float delayBeforeLoad = 1f; // seconds
+    public float delayBeforeLoad = 1f; //seconds
 
     public void PlayGame()
     {
-        StartCoroutine(LoadSceneAfterSound());
+        StartCoroutine(LoadSceneAfterSound("FishOrDieScene1"));
     }
 
-    IEnumerator LoadSceneAfterSound()
+    public void LoadTitleScreen()
+    {
+        StartCoroutine(LoadSceneAfterSound("TitleScene"));
+    }
+
+    IEnumerator LoadSceneAfterSound(string sceneName)
     {
         clickSound.Play();
         yield return new WaitForSeconds(delayBeforeLoad);
-        SceneManager.LoadScene("FishOrDieScene");
+        SceneManager.LoadScene(sceneName);
     }
 }

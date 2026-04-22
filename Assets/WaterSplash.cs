@@ -8,8 +8,9 @@ public class WaterSplash : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Hook") && !hasSplashed)
-        { 
-            splashSound.Play();
+        {
+            if (splashSound != null)
+                splashSound.Play();
             hasSplashed = true;
         }
     }

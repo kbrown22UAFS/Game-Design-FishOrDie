@@ -4,23 +4,22 @@ using UnityEngine.InputSystem;
 public class FishingRod : MonoBehaviour
 {
     public Transform hook;
-    public AudioSource reelSound;
-    public float speed = 2f;
     public Transform rodTip;
+    public AudioSource reelSound;
 
     [Header("Cast")]
-    public float castChargeTime = 2f;       // seconds of hold to reach max power
-    public float castMaxSpeed = 8f;         // hook speed at full charge
-    public Vector2 castAngle = new Vector2(1f, 0.5f); // launch direction (normalized in Awake)
+    public float castChargeTime = 2f;
+    public float castMaxSpeed = 8f;
+    public Vector2 castAngle = new Vector2(1f, 0.5f);
 
     [Header("Arc & Water")]
-    public float gravity = -18f;            // downward pull while hook is airborne
-    public float waterSurfaceY = 0.3f;      // Y level where hook enters water
+    public float gravity = -18f;
+    public float waterSurfaceY = 0.3f;
     public float bottomLimit = -3f;
 
     [Header("Underwater")]
-    public float sinkSpeed = 0.5f;          // drift speed when hook is idle in water
-    public float reelingSpeed = 3f;         // speed while X is held
+    public float sinkSpeed = 0.5f;
+    public float reelingSpeed = 3f;
 
     // ── state machine ──────────────────────────────────────────────────────────
     private enum State { AtRod, Charging, InAir, InWater, Reeling }
@@ -28,7 +27,7 @@ public class FishingRod : MonoBehaviour
 
     private float chargeTimer;
     private Vector2 hookVelocity;
-    private Vector3 rodOrigin;              // position the hook was cast from
+    private Vector3 hookHome;
     private Rigidbody2D hookRb;
 
     void Awake()
@@ -36,6 +35,7 @@ public class FishingRod : MonoBehaviour
         castAngle = castAngle.normalized;
         hookRb = hook.GetComponent<Rigidbody2D>();
         if (hookRb != null) hookRb.isKinematic = true;
+        hookHome = hook.position;
     }
 
     void Update()
@@ -77,9 +77,7 @@ public class FishingRod : MonoBehaviour
         float power = chargeTimer / castChargeTime;
         chargeTimer = 0f;
 
-        rodOrigin = rodTip != null ? rodTip.position : transform.position;
-        MoveHook(rodOrigin);
-
+        MoveHook(hookHome);
         hookVelocity = castAngle * (power * castMaxSpeed);
         state = State.InAir;
     }
@@ -124,27 +122,26 @@ public class FishingRod : MonoBehaviour
 
     void UpdateReeling()
     {
-        Vector3 toRod = rodOrigin - hook.position;
+        Vector3 target = hookHome;
+        Vector3 toRod = target - hook.position;
+
+        if (reelSound != null && !reelSound.isPlaying)
+            reelSound.Play();
 
         if (toRod.magnitude <= 0.05f)
         {
-            if (reelSound != null && !reelSound.isPlaying)
-            {
-                reelSound.Play();
-            }
+            MoveHook(target);
+            if (reelSound != null) reelSound.Stop();
+            state = State.AtRod;
+            return;
+        }
 
-            hook.position += Vector3.up * speed * Time.deltaTime;
+        MoveHook(hook.position + toRod.normalized * reelingSpeed * Time.deltaTime);
 
-            if (hook.position.y >= transform.position.y)
-            {
-                hook.position = new Vector3(hook.position.x, transform.position.y, hook.position.z);
-                isReeling = false;
-
-                if (reelSound != null)
-                { 
-                    reelSound.Stop();
-                }
-            }
+        if (!Keyboard.current.xKey.isPressed)
+        {
+            if (reelSound != null) reelSound.Stop();
+            state = hook.position.y <= waterSurfaceY ? State.InWater : State.AtRod;
         }
     }
 

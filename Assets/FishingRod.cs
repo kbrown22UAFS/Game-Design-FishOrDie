@@ -8,13 +8,13 @@ public class FishingRod : MonoBehaviour
     public AudioSource reelSound;
 
     [Header("Cast")]
-    public float castChargeTime = 2f;
-    public float castMaxSpeed = 8f;
-    public Vector2 castAngle = new Vector2(1f, 0.5f);
+    public float castChargeTime = 4f;
+    public float castMaxSpeed = 15f;
+    public Vector2 castAngle = new Vector2(-1f, 0.5f);
 
     [Header("Arc & Water")]
     public float gravity = -18f;
-    public float waterSurfaceY = 0.3f;
+    public float waterSurfaceY = 1.8225f;
     public float bottomLimit = -3f;
 
     [Header("Underwater")]

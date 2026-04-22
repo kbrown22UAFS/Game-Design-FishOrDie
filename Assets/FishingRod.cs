@@ -25,6 +25,9 @@ public class FishingRod : MonoBehaviour
     private enum State { AtRod, Charging, InAir, InWater, Reeling }
     private State state = State.AtRod;
 
+    public float ChargeFraction => castChargeTime > 0 ? chargeTimer / castChargeTime : 0f;
+    public bool IsCharging => state == State.Charging;
+
     private float chargeTimer;
     private Vector2 hookVelocity;
     private Vector3 hookHome;
@@ -138,10 +141,11 @@ public class FishingRod : MonoBehaviour
 
         MoveHook(hook.position + toRod.normalized * reelingSpeed * Time.deltaTime);
 
-        if (!Keyboard.current.xKey.isPressed)
+        bool aboveWater = hook.position.y > waterSurfaceY;
+        if (!aboveWater && !Keyboard.current.xKey.isPressed)
         {
             if (reelSound != null) reelSound.Stop();
-            state = hook.position.y <= waterSurfaceY ? State.InWater : State.AtRod;
+            state = State.InWater;
         }
     }
 
